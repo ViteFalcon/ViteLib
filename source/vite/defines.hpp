@@ -1,0 +1,7 @@
+#pragma once
+#ifndef VITE_DEFINES_HPP_INCLUDED
+#define VITE_DEFINES_HPP_INCLUDED
+
+#define vINLINE inline
+
+#endif // VITE_DEFINES_HPP_INCLUDED
