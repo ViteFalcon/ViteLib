@@ -3,6 +3,7 @@
 #include <typeinfo>
 #include <utility>
 
+#include "../string.hpp"
 #include "variant_value.h"
 #include "variant_converter.h"
 #include "variant_default.h"
@@ -15,7 +16,16 @@ namespace vite
         Variant() : mValueHeld(nullptr) {}
 
         Variant(const char* value)
-            : mValueHeld(new VariantValueImpl<std::string>(std::string(value))) {}
+            : mValueHeld(new VariantValueImpl<vite::String>(vite::String(value))) {}
+
+        Variant(const std::string& value)
+            : mValueHeld(new VariantValueImpl<vite::String>(vite::String(value))) {}
+
+        Variant(const wchar_t* value)
+            : mValueHeld(new VariantValueImpl<vite::String>(vite::String(value))) {}
+
+        Variant(const std::wstring& value)
+            : mValueHeld(new VariantValueImpl<vite::String>(vite::String(value))) {}
 
         template <typename T>
         Variant(const T& value)
