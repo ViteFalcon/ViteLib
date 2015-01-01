@@ -23,28 +23,28 @@
 */
 #pragma once
 
-#include "defines.hpp"
-#include "exception/error_detail.h"
-#include "exception/exception.h"
+#include "../defines.hpp"
+#include "../string.hpp"
 
+#include <boost/exception/error_info.hpp>
 
-#define vDEFINE_EXCEPTION_WIH_NAMESPACE(classname, namespace_name) namespace namespace_name {\
-    struct classname : vite::Exception\
+#define vERROR_INFO_TAGNAME(name) vCOMBINE(name,ErrorTag)
+#define vERROR_INFO_NAME(name) name
+#define vERROR_INFO(name, type) struct vERROR_INFO_TAGNAME(name)\
+{\
+    vERROR_INFO_TAGNAME(name)(const type val)\
+        : value(val)\
     {\
-        classname() : vite::Exception(vSTRINGIFY(classname)) {}\
-    };\
-}
-#define vDEFINE_EXCEPTION(classname)  namespace vite {\
-    struct classname : Exception\
-    {\
-        classname() : Exception(vSTRINGIFY(classname)) {}\
-    };\
-}
+    }\
+    const type value; \
+}; \
+typedef boost::error_info<vERROR_INFO_TAGNAME(name), type> vERROR_INFO_NAME(name)
+#define vERROR_INFO_STRING(name) vERROR_INFO(name, vite::String)
 
-vDEFINE_EXCEPTION(IllegalArgumentException)
-vDEFINE_EXCEPTION(InvalidStateException)
-vDEFINE_EXCEPTION(NotImplementedException)
-vDEFINE_EXCEPTION(RuntimeException)
-
-#define vTHROW(exception) boost::exception_detail::throw_exception_(exception,BOOST_CURRENT_FUNCTION,vFILENAME,__LINE__)
-#define vTHROW_IF(condition, exception) if (condition) { vTHROW(exception); }
+namespace vite
+{
+    vERROR_INFO_STRING(Detail);
+    vERROR_INFO_STRING(Hint);
+    vERROR_INFO_STRING(Hint);
+    vERROR_INFO(CausedBy, std::exception);
+}
