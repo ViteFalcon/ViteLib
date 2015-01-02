@@ -1,7 +1,7 @@
 /**
 * The MIT License (MIT)
 *
-* Copyright (c) 2014 Abi George Ullattil (Vite Falcon)
+* Copyright (c) 2015 Abi George Ullattil (Vite Falcon)
 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -823,7 +823,6 @@ namespace std
 {
     hash<vite::String>::result_type hash<vite::String>::operator()(argument_type const& value) const
     {
-        return std::hash<std::string>()(value.asUTF8());
+        return std::hash<std::wstring>()(value.asWStr());
     }
 }
-

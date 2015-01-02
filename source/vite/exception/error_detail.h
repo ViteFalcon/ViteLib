@@ -1,7 +1,7 @@
 /**
 * The MIT License (MIT)
 *
-* Copyright (c) 2014 Abi George Ullattil (Vite Falcon)
+* Copyright (c) 2015 Abi George Ullattil (Vite Falcon)
 
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@
 #include <boost/exception/error_info.hpp>
 
 #define vERROR_INFO_TAGNAME(name) vCOMBINE(name,ErrorTag)
-#define vERROR_INFO_NAME(name) name
+#define vERROR_INFO_NAME(name) vCOMBINE(ErrorInfo,name)
 #define vERROR_INFO(name, type) struct vERROR_INFO_TAGNAME(name)\
 {\
     vERROR_INFO_TAGNAME(name)(const type val)\
@@ -45,6 +45,6 @@ namespace vite
 {
     vERROR_INFO_STRING(Detail);
     vERROR_INFO_STRING(Hint);
-    vERROR_INFO_STRING(Hint);
+    vERROR_INFO_STRING(FileName);
     vERROR_INFO(CausedBy, std::exception);
 }

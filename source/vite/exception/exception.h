@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Abi George Ullattil (Vite Falcon)
+ * Copyright (c) 2015 Abi George Ullattil (Vite Falcon)
 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
 */
 #pragma once
 
-#include <boost/exception.hpp>
+#include <boost/exception/all.hpp>
 #include <exception>
 
 namespace vite

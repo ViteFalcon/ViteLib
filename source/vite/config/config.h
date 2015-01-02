@@ -23,4 +23,25 @@
 */
 #pragma once
 
-#include "variant/variant.h"
+#include "../string.hpp"
+#include "../variant.hpp"
+
+namespace vite
+{
+    class Config
+    {
+    public:
+        Config(const String& filePath);
+        ~Config();
+
+        Variant get(const String& key) const;
+
+    private: // Methods
+        void loadFile(const String& filePath);
+
+    private: // Fields
+        class ConfigValues;
+
+        ConfigValues* mConfigurations;
+    };
+}
