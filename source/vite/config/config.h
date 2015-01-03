@@ -37,10 +37,11 @@ namespace vite
         Variant get(const String& key) const;
 
     private: // Methods
+        class ConfigValues;
+
         void loadFile(const String& filePath);
 
     private: // Fields
-        class ConfigValues;
 
         ConfigValues* mConfigurations;
     };

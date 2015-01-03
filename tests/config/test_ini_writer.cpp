@@ -21,16 +21,40 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-#pragma once
+#include "test_ini_writer.h"
 
-#include <stdio.h>
-#include <tchar.h>
+TestIniWriter::TestIniWriter(const vite::String& filename)
+    : stream(filename.asUTF8(), std::ios::binary|std::ios::out)
+{
+}
 
-#define roUSE_GMOCK 0
+TestIniWriter::TestIniWriter(TestIniWriter&& other)
+    : stream(std::move(other.stream))
+{
+}
 
-#include <gtest/gtest.h>
-#if roUSE_GMOCK
-#   include <gmock/gmock.h>
-#endif
+TestIniWriter::~TestIniWriter()
+{
+    close();
+}
 
-// TODO: reference additional headers your program requires here
+TestIniWriter& TestIniWriter::addSection(const char* section)
+{
+    stream << "[" << section << "]" << std::endl;
+    return *this;
+}
+
+TestIniWriter& TestIniWriter::addEntry(const char* key, const char* value)
+{
+    stream << key << " = " << value << std::endl;
+    return *this;
+}
+
+void TestIniWriter::close()
+{
+    if (stream.is_open())
+    {
+        stream.close();
+    }
+}
+

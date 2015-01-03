@@ -23,14 +23,21 @@
 */
 #pragma once
 
-#include <stdio.h>
-#include <tchar.h>
+#include <vite/string.hpp>
 
-#define roUSE_GMOCK 0
+#include <fstream>
 
-#include <gtest/gtest.h>
-#if roUSE_GMOCK
-#   include <gmock/gmock.h>
-#endif
+class TestIniWriter
+{
+public:
+    TestIniWriter(const vite::String& filename);
+    TestIniWriter(TestIniWriter&& other);
+    ~TestIniWriter();
 
-// TODO: reference additional headers your program requires here
+    TestIniWriter& addSection(const char* section);
+    TestIniWriter& addEntry(const char* key, const char* value);
+
+    void close();
+private:
+    std::ofstream stream;
+};

@@ -21,16 +21,3 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-#pragma once
-
-#include <stdio.h>
-#include <tchar.h>
-
-#define roUSE_GMOCK 0
-
-#include <gtest/gtest.h>
-#if roUSE_GMOCK
-#   include <gmock/gmock.h>
-#endif
-
-// TODO: reference additional headers your program requires here

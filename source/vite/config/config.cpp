@@ -63,6 +63,29 @@ namespace vite
         {
             other.mMap.swap(mMap);
         }
+
+        void addKey(boost::property_tree::wptree& propertyTree, const String& key)
+        {
+            const Variant value = propertyTree.get<std::wstring>(key.asWStr());
+            insert(key, value);
+        }
+
+        void addSection(const boost::property_tree::wptree::iterator& sectionItr)
+        {
+            const String sectionName = sectionItr->first;
+            boost::property_tree::wptree::const_iterator
+                settingItr = sectionItr->second.begin(),
+                settingEnd = sectionItr->second.end();
+            while (settingItr != settingEnd)
+            {
+                const String settingName = sectionName + L"." + settingItr->first;
+                const Variant settingValue(settingItr->second.get_value<std::wstring>());
+
+                insert(settingName, settingValue);
+
+                ++settingItr;
+            }
+        }
     private:
         MapType mMap;
     };
@@ -71,6 +94,7 @@ namespace vite
 vite::Config::Config(const String& filePath)
     : mConfigurations(new vite::Config::ConfigValues())
 {
+    loadFile(filePath);
 }
 
 vite::Config::~Config()
@@ -78,6 +102,17 @@ vite::Config::~Config()
     delete mConfigurations;
 }
 
+namespace vite
+{
+    String getSettingName(const String& sectionName, const String& key)
+    {
+        if (key.empty())
+        {
+            return sectionName;
+        }
+        return sectionName + L"." + key;
+    }
+}
 
 void vite::Config::loadFile(const String& filePath)
 {
@@ -108,17 +143,13 @@ void vite::Config::loadFile(const String& filePath)
         while (sectionItr != sectionEnd)
         {
             const String sectionName = sectionItr->first;
-            wptree::iterator
-                settingItr = sectionItr->second.begin(),
-                settingEnd = sectionItr->second.end();
-            while (settingItr != settingEnd)
+            if (sectionItr->second.empty())
             {
-                const String settingName((sectionName + L"." + settingItr->first).asUTF8_c_str());
-                const Variant settingValue(settingItr->second.get_value<std::wstring>());
-
-                configuration.insert(settingName, settingValue);
-
-                ++settingItr;
+                configuration.addKey(propertyTree, sectionName);
+            }
+            else
+            {
+                configuration.addSection(sectionItr);
             }
             ++sectionItr;
         }
