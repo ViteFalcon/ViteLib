@@ -27,6 +27,7 @@
 #include <typeinfo>
 #include <utility>
 
+#include "../optional.hpp"
 #include "../string.hpp"
 #include "variant_value.h"
 #include "variant_converter.h"
@@ -157,21 +158,58 @@ namespace vite
         }
 
         template <typename ToType>
+        Optional<ToType> maybeAs() const
+        {
+            if (mValueHeld == nullptr)
+            {
+                return Optional<ToType>::absent();
+            }
+            if (typeid(ToType) == mValueHeld->getType())
+            {
+                return Optional<ToType>::of(getData<ToType>());
+            }
+            if (VariantConverter::canConvert<ToType>(mValueHeld->getType()))
+            {
+                return Optional<ToType>::of(*VariantConverter::convert<ToType>(mValueHeld->getType(), mValueHeld->data()));
+            }
+            return Optional<ToType>::absent();
+        }
+
+        template<>
+        Optional<const char*> maybeAs<const char*>() const;
+
+        template<>
+        Optional<const wchar_t*> maybeAs<const wchar_t*>() const;
+
+        //template <>
+        //Optional<std::string> maybeAs<std::string>() const;
+
+        //template<>
+        //Optional<std::wstring> maybeAs<std::wstring>() const;
+
+        template <typename ToType>
         ToType as() const
         {
             if (mValueHeld == nullptr)
             {
                 return VariantDefault<ToType>();
             }
-            else if (typeid(ToType) == mValueHeld->getType())
+            Optional<ToType> result = maybeAs<ToType>();
+            if (result.isAbsent())
             {
-                return ToType(*(static_cast<const ToType*>(mValueHeld->data())));
+                std::stringstream errorMessage;
+                errorMessage << "Failed to convert variant to type " << typeid(ToType).name();
+                vTHROW(InvalidOperationException() << ErrorInfoDetail(errorMessage.str()));
             }
-            return *VariantConverter::convert<ToType>(mValueHeld->getType(), mValueHeld->data());
+            return result.getValue();
         }
 
-        template<>
-        const char* as<const char*>() const;
+    private:
+        template <typename U>
+        inline const U& getData() const
+        {
+            return *static_cast<const U*>(mValueHeld->data());
+        }
     private:
         static const std::type_info& VOID_TYPE;
 

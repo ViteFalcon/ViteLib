@@ -23,31 +23,4 @@
 */
 #pragma once
 
-#include "defines.hpp"
-#include "exception/error_detail.h"
-#include "exception/exception.h"
-
-
-#define vDEFINE_EXCEPTION_WIH_NAMESPACE(classname, namespace_name) namespace namespace_name {\
-    struct classname : vite::Exception\
-    {\
-        classname() : vite::Exception(vSTRINGIFY(classname)) {}\
-    };\
-}
-#define vDEFINE_EXCEPTION(classname)  namespace vite {\
-    struct classname : Exception\
-    {\
-        classname() : Exception(vSTRINGIFY(classname)) {}\
-    };\
-}
-
-vDEFINE_EXCEPTION(FileNotFoundException);
-vDEFINE_EXCEPTION(IllegalArgumentException)
-vDEFINE_EXCEPTION(InvalidOperationException)
-vDEFINE_EXCEPTION(InvalidStateException)
-vDEFINE_EXCEPTION(ItemNotFoundException)
-vDEFINE_EXCEPTION(NotImplementedException)
-vDEFINE_EXCEPTION(RuntimeException)
-
-#define vTHROW(exception) boost::exception_detail::throw_exception_(exception,BOOST_CURRENT_FUNCTION,vFILENAME,__LINE__)
-#define vTHROW_IF(condition, exception) if (condition) { vTHROW(exception); }
+#include "optional/optional.h"

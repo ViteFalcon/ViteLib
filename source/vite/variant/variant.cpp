@@ -23,12 +23,51 @@
 */
 #include "variant.h"
 
-using namespace vite;
-
-const std::type_info& Variant::VOID_TYPE = typeid(void);
-
-template<>
-const char* vite::Variant::as<const char*>() const
+namespace vite
 {
-    return as<std::string>().c_str();
+    const std::type_info& Variant::VOID_TYPE = typeid(void);
+
+    template<>
+    vEXPORT Optional<const char*> Variant::maybeAs<const char*>() const
+    {
+        const Optional<String> result = maybeAs<String>();
+        if (result.isAbsent())
+        {
+            Optional<const char*>::absent();
+        }
+        return Optional<const char*>::of(result.getValue().asUTF8_c_str());
+    }
+
+    template<>
+    vEXPORT Optional<const wchar_t*> Variant::maybeAs<const wchar_t*>() const
+    {
+        const Optional<String> result = maybeAs<String>();
+        if (result.isAbsent())
+        {
+            Optional<const wchar_t*>::absent();
+        }
+        return Optional<const wchar_t*>::of(result.getValue().asWStr_c_str());
+    }
+
+    /*template <>
+    vEXPORT Optional<std::string> Variant::maybeAs<std::string>() const
+    {
+        const Optional<String> result = maybeAs<String>();
+        if (result.isAbsent())
+        {
+            Optional<std::string>::absent();
+        }
+        return Optional<std::string>::of(result.getValue().asUTF8());
+    }
+
+    template<>
+    vEXPORT Optional<std::wstring> Variant::maybeAs<std::wstring>() const
+    {
+        const Optional<String> result = maybeAs<String>();
+        if (result.isAbsent())
+        {
+            Optional<std::wstring>::absent();
+        }
+        return Optional<std::wstring>::of(result.getValue().asWStr());
+    }*/
 }

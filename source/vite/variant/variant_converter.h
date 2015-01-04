@@ -24,7 +24,7 @@
 #pragma once
 
 #include <functional>
-#include <hash_map>
+#include <unordered_map>
 #include <sstream>
 #include <typeinfo>
 
@@ -40,9 +40,14 @@ namespace vite
 
     class VariantConverter
     {
-    public:
+    public: // Types
         typedef std::function<void*(const void* fromValue)> Converter;
 
+    private: // Types
+        typedef std::unordered_map<const std::type_info*, Converter> ToConverter;
+        typedef std::unordered_map<const std::type_info*, ToConverter> Converters;
+
+    public:
         template <typename FromType, typename ToType>
         static void add()
         {
@@ -60,6 +65,18 @@ namespace vite
             sConverters[fromType][toType] = converter;
         }
 
+        template<typename FromType, typename ToType>
+        static bool canConvert()
+        {
+            return canConvert(typeid(FromType), typeid(ToType));
+        }
+
+        template<typename ToType>
+        static bool canConvert(const std::type_info& fromTypeInfo)
+        {
+            return canConvert(fromTypeInfo, typeid(ToType));
+        }
+
         template <typename FromType, typename ToType>
         static ToType* convert(const FromType* fromValue)
         {
@@ -71,15 +88,16 @@ namespace vite
         static ToType* convert(const std::type_info& fromTypeInfo, const void* fromValue)
         {
             const std::type_info& toTypeInfo = typeid(ToType);
-            void* value = sConverters[&fromTypeInfo][&toTypeInfo](fromValue);
+            void* value = convert(fromTypeInfo, fromValue, toTypeInfo);
             return static_cast<ToType*>(value);
         }
     private:
-        typedef std::hash_map<const std::type_info*, Converter> ToConverter;
-        typedef std::hash_map<const std::type_info*, ToConverter> Converters;
-
         static Converters sConverters;
         static StdConverters sStdConverters;
+
+        static bool canConvert(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo);
+
+        static void* convert(const std::type_info& fromTypeInfo, const void* fromValue, const std::type_info& toTypeInfo);
     public:
         VariantConverter() = delete;
         ~VariantConverter() = delete;

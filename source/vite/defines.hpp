@@ -76,6 +76,12 @@
     )
 #endif
 
+#if vCOMPILER_IS_MSVC
+#   define vEXPORT __declspec(dllexport)
+#else
+#   define vEXPORT
+#endif
+
 #define vINLINE inline
 
 #define vSTRINGIFY(a) # a

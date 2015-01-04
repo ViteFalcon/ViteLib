@@ -22,6 +22,38 @@
 * THE SOFTWARE.
 */
 #include "variant_converter.h"
+#include "../exception.hpp"
 
 vite::VariantConverter::Converters vite::VariantConverter::sConverters;
 vite::StdConverters vite::VariantConverter::sStdConverters;
+
+bool vite::VariantConverter::canConvert(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo)
+{
+    const Converters::const_iterator fromConverterItr = sConverters.find(&fromTypeInfo);
+    if (fromConverterItr == sConverters.cend())
+    {
+        return false;
+    }
+    const ToConverter::const_iterator toConverterItr = fromConverterItr->second.find(&toTypeInfo);
+    return toConverterItr != fromConverterItr->second.cend();
+}
+
+void* vite::VariantConverter::convert(const std::type_info& fromTypeInfo, const void* fromValue, const std::type_info& toTypeInfo)
+{
+    auto fromConverterItr = sConverters.find(&fromTypeInfo);
+    if (fromConverterItr == sConverters.cend())
+    {
+        std::stringstream errorMessage;
+        errorMessage << "Variant conversions doesn't have any conversion methods for types from " << fromTypeInfo.name();
+        vTHROW(InvalidOperationException() << ErrorInfoDetail(errorMessage.str()));
+    }
+    auto toConverterItr = fromConverterItr->second.find(&toTypeInfo);
+    if (toConverterItr == fromConverterItr->second.cend())
+    {
+        std::stringstream errorMessage;
+        errorMessage << "Variant conversions doesn't exist from " << fromTypeInfo.name() << " to " << toTypeInfo.name();
+        vTHROW(InvalidOperationException() << ErrorInfoDetail(errorMessage.str()));
+    }
+    Converter converter = toConverterItr->second;
+    return converter(fromValue);
+}
