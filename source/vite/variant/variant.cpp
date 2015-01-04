@@ -49,7 +49,7 @@ namespace vite
         return Optional<const wchar_t*>::of(result.getValue().asWStr_c_str());
     }
 
-    /*template <>
+    template <>
     vEXPORT Optional<std::string> Variant::maybeAs<std::string>() const
     {
         const Optional<String> result = maybeAs<String>();
@@ -69,5 +69,5 @@ namespace vite
             Optional<std::wstring>::absent();
         }
         return Optional<std::wstring>::of(result.getValue().asWStr());
-    }*/
+    }
 }

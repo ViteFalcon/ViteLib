@@ -426,37 +426,11 @@ namespace vite
         return vite::String(buffer);
     }
 
-    template<>
-    std::string ConvertVariant<vite::String, std::string>(const vite::String& value)
-    {
-        return value.asUTF8();
-    }
-
-    template<>
-    std::wstring ConvertVariant<vite::String, std::wstring>(const vite::String& value)
-    {
-        return value.asWStr();
-    }
-
     template <typename FromType, typename ToType>
     void RegisterCombination()
     {
         VariantConverter::add<FromType, ToType>();
         VariantConverter::add<ToType, FromType>();
-    }
-
-    template <typename T>
-    void RegisterStringCombination()
-    {
-        RegisterCombination<T, vite::String>();
-        VariantConverter::add<T, std::string>([](const void* value) -> void* {
-            const T& typeValue = *static_cast<const T*>(value);
-            return new std::string(ConvertVariant<T, vite::String>(typeValue).asUTF8());
-        });
-        VariantConverter::add<T, std::wstring>([](const void* value) -> void* {
-            const T& typeValue = *static_cast<const T*>(value);
-            return new std::wstring(ConvertVariant<T, vite::String>(typeValue).asWStr());
-        });
     }
 
     template <typename FromType>
@@ -480,7 +454,7 @@ namespace vite
         RegisterCombination<FromType, std::int64_t>();
         RegisterCombination<FromType, float>();
         RegisterCombination<FromType, double>();
-        RegisterStringCombination<FromType>();
+        RegisterCombination<FromType, vite::String>();
     }
 
     StdConverters::StdConverters()

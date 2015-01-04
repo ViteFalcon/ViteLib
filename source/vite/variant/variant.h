@@ -181,11 +181,11 @@ namespace vite
         template<>
         Optional<const wchar_t*> maybeAs<const wchar_t*>() const;
 
-        //template <>
-        //Optional<std::string> maybeAs<std::string>() const;
+        template <>
+        Optional<std::string> maybeAs<std::string>() const;
 
-        //template<>
-        //Optional<std::wstring> maybeAs<std::wstring>() const;
+        template<>
+        Optional<std::wstring> maybeAs<std::wstring>() const;
 
         template <typename ToType>
         ToType as() const
