@@ -23,10 +23,10 @@
 */
 #pragma once
 
-#include <boost/exception/all.hpp>
 #include <exception>
 
 #include "../defines.hpp"
+#include "error_detail.h"
 
 #if vCOMPILER_IS_MSVC
 #   pragma warning(push)
@@ -35,20 +35,47 @@
 
 namespace vite
 {
-    struct vLIB_EXPORT Exception : virtual std::exception, virtual boost::exception
+    struct vLIB_EXPORT Exception : public std::exception
     {
     public:
-        Exception() = default;
-        Exception(const char* typeName)
-#if _WIN32
-            : std::exception(typeName)
-#endif
-        {
-        }
+        static void Throw(Exception& exception, const char* currentFunction, const char* currentFile, int currentLine);
+    public:
+        Exception();
+        Exception(const char* typeName);
 
         virtual const char* what() const override;
+
+        Exception& operator << (const inner::ErrorInfo& info);
+
+    private:
+        std::string toString() const;
+
+        class ErrorDetails;
+        ErrorDetails* details;
     };
 }
+
+
+#define vDEFINE_EXCEPTION_WIH_NAMESPACE(classname, namespace_name) namespace namespace_name {\
+    struct classname : vite::Exception\
+    {\
+        classname() : vite::Exception(vSTRINGIFY(classname)) {}\
+    };\
+}
+#define vDECLARE_LIB_EXCEPTION(classname)  namespace vite {\
+    struct vLIB_EXPORT classname : Exception\
+    {\
+        classname();\
+    };\
+}
+
+vDECLARE_LIB_EXCEPTION(FileNotFoundException)
+vDECLARE_LIB_EXCEPTION(IllegalArgumentException)
+vDECLARE_LIB_EXCEPTION(InvalidOperationException)
+vDECLARE_LIB_EXCEPTION(InvalidStateException)
+vDECLARE_LIB_EXCEPTION(ItemNotFoundException)
+vDECLARE_LIB_EXCEPTION(NotImplementedException)
+vDECLARE_LIB_EXCEPTION(RuntimeException)
 
 #if vCOMPILER_IS_MSVC
 #   pragma warning(pop)

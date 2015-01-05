@@ -21,11 +21,21 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-#pragma once
+#include "boost_error_detail.h"
+#include <sstream>
 
-#include "defines.hpp"
-#include "exception/error_detail.h"
-#include "exception/exception.h"
+namespace vite
+{
+    namespace boost
+    {
+        BoostExceptionInfo::BoostExceptionInfo(const ::boost::exception& exception)
+            : ErrorDetail("BoostException", ::boost::diagnostic_information(exception)) {}
 
-#define vTHROW(exception) Exception::Throw(exception,vCURRENT_FUNCTION,vCURRENT_FILENAME,vCURRENT_LINE)
-#define vTHROW_IF(condition, exception) if (condition) { vTHROW(exception); }
+        std::string BoostExceptionInfo::toString() const
+        {
+            std::stringstream errorDetail;
+            errorDetail << "Caused By: " << value;
+            return errorDetail.str();
+        }
+    }
+}

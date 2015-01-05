@@ -23,9 +23,18 @@
 */
 #pragma once
 
-#include "defines.hpp"
-#include "exception/error_detail.h"
-#include "exception/exception.h"
+#include <boost/exception/all.hpp>
+#include "error_detail.h"
 
-#define vTHROW(exception) Exception::Throw(exception,vCURRENT_FUNCTION,vCURRENT_FILENAME,vCURRENT_LINE)
-#define vTHROW_IF(condition, exception) if (condition) { vTHROW(exception); }
+namespace vite
+{
+    namespace boost
+    {
+        struct vLIB_EXPORT BoostExceptionInfo : vite::inner::ErrorDetail<std::string>
+        {
+            BoostExceptionInfo(const ::boost::exception& exception);
+
+            virtual std::string toString() const override;
+        };
+    }
+}

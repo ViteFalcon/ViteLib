@@ -21,11 +21,30 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-#pragma once
+#include "error_detail.h"
+#include <algorithm>
+#include <sstream>
 
-#include "defines.hpp"
-#include "exception/error_detail.h"
-#include "exception/exception.h"
+#define vMAX_ERROR_MESSAGE_SIZE 10240
 
-#define vTHROW(exception) Exception::Throw(exception,vCURRENT_FUNCTION,vCURRENT_FILENAME,vCURRENT_LINE)
-#define vTHROW_IF(condition, exception) if (condition) { vTHROW(exception); }
+namespace vite
+{
+    vLIB_DEFINE_ERROR_INFO_STRING(Detail);
+    vLIB_DEFINE_ERROR_INFO_STRING(Hint);
+    vLIB_DEFINE_ERROR_INFO_STRING(FileName);
+
+    ErrorInfoCausedBy::ErrorInfoCausedBy(const std::exception& cause_)
+        : cause(cause_) {}
+
+    inner::ErrorInfo* ErrorInfoCausedBy::clone() const
+    {
+        return new ErrorInfoCausedBy(cause);
+    }
+
+    std::string ErrorInfoCausedBy::toString() const
+    {
+        std::stringstream detailString;
+        detailString << "Caused By [" << typeid(cause).name() << "]: " << cause.what();
+        return detailString.str();
+    }
+}

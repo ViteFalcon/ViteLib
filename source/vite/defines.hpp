@@ -65,12 +65,12 @@
 
 #if defined(_WIN32)
 
-#   define vFILENAME (strrchr(__FILE__,'\\') \
+#   define vCURRENT_FILENAME (strrchr(__FILE__,'\\') \
     ? strrchr(__FILE__,'\\')+1 \
     : __FILE__ \
     )
 #else
-#   define vFILENAME (strrchr(__FILE__,'/') \
+#   define vCURRENT_FILENAME (strrchr(__FILE__,'/') \
     ? strrchr(__FILE__,'/')+1 \
     : __FILE__ \
     )
@@ -111,3 +111,23 @@
 #else
 #   define vLIB_EXPORT vDLL_IMPORT
 #endif
+
+#if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
+#   define vCURRENT_FUNCTION __PRETTY_FUNCTION__
+#elif defined(__DMC__) && (__DMC__ >= 0x810)
+#   define vCURRENT_FUNCTION __PRETTY_FUNCTION__
+#elif defined(__FUNCSIG__)
+#   define vCURRENT_FUNCTION __FUNCSIG__
+#elif vCOMPILER_IS_MSVC
+#   define vCURRENT_FUNCTION __FUNCSIG__
+#elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
+#   define vCURRENT_FUNCTION __FUNCTION__
+#elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x550)
+#   define vCURRENT_FUNCTION __FUNC__
+#elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901)
+#   define vCURRENT_FUNCTION __func__
+#else
+#   define vCURRENT_FUNCTION "(unknown)"
+#endif
+
+#define vCURRENT_LINE __LINE__

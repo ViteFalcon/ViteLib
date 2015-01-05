@@ -29,6 +29,7 @@
 #include "config.h"
 #include "../defines.hpp"
 #include "../exception.hpp"
+#include "../exception/boost_error_detail.h"
 
 #include <fstream>
 #include <unordered_map>
@@ -64,16 +65,16 @@ namespace vite
             other.mMap.swap(mMap);
         }
 
-        void addKey(boost::property_tree::wptree& propertyTree, const String& key)
+        void addKey(::boost::property_tree::wptree& propertyTree, const String& key)
         {
             const Variant value = propertyTree.get<std::wstring>(key.asWStr());
             insert(key, value);
         }
 
-        void addSection(const boost::property_tree::wptree::iterator& sectionItr)
+        void addSection(const ::boost::property_tree::wptree::iterator& sectionItr)
         {
             const String sectionName = sectionItr->first;
-            boost::property_tree::wptree::const_iterator
+            ::boost::property_tree::wptree::const_iterator
                 settingItr = sectionItr->second.begin(),
                 settingEnd = sectionItr->second.end();
             while (settingItr != settingEnd)
@@ -133,7 +134,7 @@ void vite::Config::loadFile(const String& filePath)
         std::wstringstream textStream;
         textStream.write(fileContent.asWStr_c_str(), fileContent.size());
 
-        using namespace boost::property_tree;
+        using namespace ::boost::property_tree;
         wptree propertyTree;
         ini_parser::read_ini(textStream, propertyTree);
         wptree::iterator
@@ -155,10 +156,9 @@ void vite::Config::loadFile(const String& filePath)
         }
         mConfigurations->swap(configuration);
     }
-    catch (boost::exception& ex)
+    catch (::boost::exception& ex)
     {
-        ex << ErrorInfoFileName(filePath);
-        throw;
+        vTHROW(Exception() << boost::BoostExceptionInfo(ex));
     }
     catch (std::exception& ex)
     {

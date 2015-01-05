@@ -26,25 +26,73 @@
 #include "../defines.hpp"
 #include "../string.hpp"
 
-#include <boost/exception/error_info.hpp>
+namespace vite
+{
+    namespace inner
+    {
+        struct ErrorInfo
+        {
+            virtual ErrorInfo* clone() const = 0;
+            virtual std::string toString() const = 0;
+        };
 
-#define vERROR_INFO_TAGNAME(name) vCOMBINE(name,ErrorTag)
+        template <typename ErrorInfoType>
+        struct ErrorDetail : ErrorInfo
+        {
+        public:
+            ErrorDetail(const char* name_, const ErrorInfoType _value)
+                : name(name_), value(_value) {}
+
+            virtual ErrorInfo* clone() const override
+            {
+                return new ErrorDetail<ErrorInfoType>(name.c_str(), value);
+            }
+
+            virtual std::string toString() const override
+            {
+                std::stringstream errorDetail;
+                errorDetail << name << ": " << value;
+                return errorDetail.str();
+            }
+        protected:
+            const std::string name;
+            const ErrorInfoType value;
+        };
+    }
+}
+
 #define vERROR_INFO_NAME(name) vCOMBINE(ErrorInfo,name)
-#define vERROR_INFO(name, type) struct vERROR_INFO_TAGNAME(name)\
+#define vERROR_INFO(name, type) struct vERROR_INFO_NAME(name) : vite::inner::ErrorDetail<type>\
 {\
-    vERROR_INFO_TAGNAME(name)(const type val)\
-        : value(val)\
+    vERROR_INFO_NAME(name)(const type val)\
+        : ErrorDetail(vSTRINGIFY(name), val)\
     {\
     }\
-    const type value; \
-}; \
-typedef boost::error_info<vERROR_INFO_TAGNAME(name), type> vERROR_INFO_NAME(name)
+}
 #define vERROR_INFO_STRING(name) vERROR_INFO(name, vite::String)
+
+#define vLIB_DECLARE_ERROR_INFO(name, type) struct vLIB_EXPORT vERROR_INFO_NAME(name) : vite::inner::ErrorDetail<type>\
+{\
+    vERROR_INFO_NAME(name)(const type val);\
+}
+#define vLIB_DEFINE_ERROR_INFO(name, type) vERROR_INFO_NAME(name)::vERROR_INFO_NAME(name)(const type val) : vite::inner::ErrorDetail<type>(vSTRINGIFY(name), val){}
+
+#define vLIB_DECLARE_ERROR_INFO_STRING(name) vLIB_DECLARE_ERROR_INFO(name, vite::String)
+#define vLIB_DEFINE_ERROR_INFO_STRING(name) vLIB_DEFINE_ERROR_INFO(name, vite::String)
 
 namespace vite
 {
-    vERROR_INFO_STRING(Detail);
-    vERROR_INFO_STRING(Hint);
-    vERROR_INFO_STRING(FileName);
-    vERROR_INFO(CausedBy, std::exception);
+    vLIB_DECLARE_ERROR_INFO_STRING(Detail);
+    vLIB_DECLARE_ERROR_INFO_STRING(Hint);
+    vLIB_DECLARE_ERROR_INFO_STRING(FileName);
+
+    struct vLIB_EXPORT ErrorInfoCausedBy : inner::ErrorInfo
+    {
+    public:
+        ErrorInfoCausedBy(const std::exception& cause_);
+        virtual inner::ErrorInfo* clone() const override;
+        virtual std::string toString() const override;
+    private:
+        const std::exception& cause;
+    };
 }
