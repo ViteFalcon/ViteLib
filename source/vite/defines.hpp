@@ -76,12 +76,6 @@
     )
 #endif
 
-#if vCOMPILER_IS_MSVC
-#   define vEXPORT __declspec(dllexport)
-#else
-#   define vEXPORT
-#endif
-
 #define vINLINE inline
 
 #define vSTRINGIFY(a) # a
@@ -89,3 +83,31 @@
 #define vCOMBINE(a,b) a ## b
 
 #define vWHERE __FUNCTION__<<"["<<vFILENAME<<" @ Line: "<<__LINE__<<"]"
+
+#if vOS_IS_WINDOWS
+#   if vCOMPILER_IS_MSVC
+#       pragma warning(disable: 4251)
+#       define vDLL_EXPORT __declspec(dllexport)
+#       define vDLL_IMPORT __declspec(dllimport)
+    #elif vCOMPILER_IS_GNUC
+#       define vDLL_EXPORT __attribute__ ((dllexport))
+#       define vDLL_IMPORT __attribute__ ((dllimport))
+#   endif
+#   define vLIB_LOCAL
+#else
+#   if vCOMPILER_IS_GNUC
+#       define vDLL_EXPORT __attribute__ ((visibility ("default")))
+#       define vDLL_IMPORT
+#       define vLIB_LOCAL __attribute__ ((visibility ("hidden")))
+#   else
+#       define vDLL_EXPORT
+#       define vDLL_IMPORT
+#       define vLIB_LOCAL
+#   endif
+#endif
+
+#if defined(ViteLib_EXPORTS)
+#   define vLIB_EXPORT vDLL_EXPORT
+#else
+#   define vLIB_EXPORT vDLL_IMPORT
+#endif

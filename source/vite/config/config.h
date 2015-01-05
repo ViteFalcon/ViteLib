@@ -23,12 +23,13 @@
 */
 #pragma once
 
+#include "../defines.hpp"
 #include "../string.hpp"
 #include "../variant.hpp"
 
 namespace vite
 {
-    class Config
+    class vLIB_EXPORT Config
     {
     public:
         Config(const String& filePath);

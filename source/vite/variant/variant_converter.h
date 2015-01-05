@@ -24,10 +24,11 @@
 #pragma once
 
 #include <functional>
-#include <unordered_map>
+#include <memory>
 #include <sstream>
 #include <typeinfo>
 
+#include "../defines.hpp"
 #include "std_converters.h"
 
 namespace vite
@@ -38,14 +39,10 @@ namespace vite
         return ToType(value);
     }
 
-    class VariantConverter
+    class vLIB_EXPORT VariantConverter
     {
     public: // Types
         typedef std::function<void*(const void* fromValue)> Converter;
-
-    private: // Types
-        typedef std::unordered_map<const std::type_info*, Converter> ToConverter;
-        typedef std::unordered_map<const std::type_info*, ToConverter> Converters;
 
     public:
         template <typename FromType, typename ToType>
@@ -60,9 +57,7 @@ namespace vite
         template <typename FromType, typename ToType>
         static void add(Converter converter)
         {
-            const std::type_info* fromType = &typeid(FromType);
-            const std::type_info* toType = &typeid(ToType);
-            sConverters[fromType][toType] = converter;
+            add(typeid(FromType), typeid(ToType), converter);
         }
 
         template<typename FromType, typename ToType>
@@ -91,9 +86,16 @@ namespace vite
             void* value = convert(fromTypeInfo, fromValue, toTypeInfo);
             return static_cast<ToType*>(value);
         }
+
+    private: // Types
+        class vLIB_EXPORT Converters;
+        typedef std::unique_ptr<Converters> ConvertersPtr;
+
     private:
-        static Converters sConverters;
+        static ConvertersPtr sConverters;
         static StdConverters sStdConverters;
+
+        static void add(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo, const Converter& converter);
 
         static bool canConvert(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo);
 

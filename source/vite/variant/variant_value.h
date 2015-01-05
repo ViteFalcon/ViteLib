@@ -24,10 +24,11 @@
 #pragma once
 
 #include <typeinfo>
+#include "../defines.hpp"
 
 namespace vite
 {
-    class VariantValue
+    class vLIB_EXPORT VariantValue
     {
     public:
         VariantValue() = default;

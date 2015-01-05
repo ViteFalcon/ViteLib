@@ -23,9 +23,11 @@
 */
 #pragma once
 
+#include "../defines.hpp"
+
 namespace vite
 {
-    class StdConverters
+    class vLIB_EXPORT StdConverters
     {
     public:
         StdConverters();

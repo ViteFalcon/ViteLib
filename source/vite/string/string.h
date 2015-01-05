@@ -28,7 +28,7 @@
 
 namespace vite
 {
-    class String
+    class vLIB_EXPORT String
     {
     public:
         static const String EMPTY;
@@ -479,7 +479,7 @@ namespace vite
 namespace std
 {
     template <>
-    struct hash<vite::String>
+    struct vLIB_EXPORT hash<vite::String>
     {
         typedef vite::String argument_type;
         typedef std::size_t result_type;

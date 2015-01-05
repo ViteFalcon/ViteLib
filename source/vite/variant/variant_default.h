@@ -26,6 +26,8 @@
 #include <cinttypes>
 #include <sstream>
 
+#include "../defines.hpp"
+
 namespace vite
 {
     template <typename T>
@@ -35,54 +37,54 @@ namespace vite
     }
 
     template<>
-    extern bool VariantDefault<bool>();
+    vLIB_EXPORT bool VariantDefault<bool>();
 
     template<>
-    extern char VariantDefault<char>();
+    vLIB_EXPORT char VariantDefault<char>();
 
     template<>
-    extern unsigned char VariantDefault<unsigned char>();
+    vLIB_EXPORT unsigned char VariantDefault<unsigned char>();
 
     template<>
-    extern std::int8_t VariantDefault<std::int8_t>();
+    vLIB_EXPORT std::int8_t VariantDefault<std::int8_t>();
 
     template<>
-    extern std::uint8_t VariantDefault<std::uint8_t>();
+    vLIB_EXPORT std::uint8_t VariantDefault<std::uint8_t>();
 
     template<>
-    extern short VariantDefault<short>();
+    vLIB_EXPORT short VariantDefault<short>();
 
     template<>
-    extern unsigned short VariantDefault<unsigned short>();
+    vLIB_EXPORT unsigned short VariantDefault<unsigned short>();
 
     template<>
-    extern int VariantDefault<int>();
+    vLIB_EXPORT int VariantDefault<int>();
 
     template<>
-    extern unsigned int VariantDefault<unsigned int>();
+    vLIB_EXPORT unsigned int VariantDefault<unsigned int>();
 
     template<>
-    extern long VariantDefault<long>();
+    vLIB_EXPORT long VariantDefault<long>();
 
     template<>
-    extern unsigned long VariantDefault<unsigned long>();
+    vLIB_EXPORT unsigned long VariantDefault<unsigned long>();
 
     template<>
-    extern long long VariantDefault<long long>();
+    vLIB_EXPORT long long VariantDefault<long long>();
 
     template<>
-    extern unsigned long long VariantDefault<unsigned long long>();
+    vLIB_EXPORT unsigned long long VariantDefault<unsigned long long>();
 
     template<>
-    extern float VariantDefault<float>();
+    vLIB_EXPORT float VariantDefault<float>();
 
     template<>
-    extern double VariantDefault<double>();
+    vLIB_EXPORT double VariantDefault<double>();
 
     template<>
-    extern long double VariantDefault<long double>();
+    vLIB_EXPORT long double VariantDefault<long double>();
 
     template<>
-    extern std::string VariantDefault<std::string>();
+    vLIB_EXPORT std::string VariantDefault<std::string>();
 }
 

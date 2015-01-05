@@ -27,6 +27,7 @@
 #include <typeinfo>
 #include <utility>
 
+#include "../defines.hpp"
 #include "../optional.hpp"
 #include "../string.hpp"
 #include "variant_value.h"
@@ -35,7 +36,7 @@
 
 namespace vite
 {
-    class Variant
+    class vLIB_EXPORT Variant
     {
     public:
         Variant() : mValueHeld(nullptr) {}
@@ -194,7 +195,7 @@ namespace vite
             {
                 return VariantDefault<ToType>();
             }
-            Optional<ToType> result = maybeAs<ToType>();
+            auto result = maybeAs<ToType>();
             if (result.isAbsent())
             {
                 std::stringstream errorMessage;

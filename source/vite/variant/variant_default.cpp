@@ -24,97 +24,97 @@
 #include "variant_default.h"
 
 template<>
-bool vite::VariantDefault()
+vLIB_EXPORT bool vite::VariantDefault()
 {
     return false;
 }
 
 template<>
-char vite::VariantDefault()
+vLIB_EXPORT char vite::VariantDefault()
 {
     return '\0';
 }
 
 template<>
-unsigned char vite::VariantDefault()
+vLIB_EXPORT unsigned char vite::VariantDefault()
 {
     return '\0';
 }
 
 template<>
-std::int8_t vite::VariantDefault()
+vLIB_EXPORT std::int8_t vite::VariantDefault()
 {
     return '\0';
 }
 
 template<>
-short vite::VariantDefault()
+vLIB_EXPORT short vite::VariantDefault()
 {
     return 0;
 }
 
 template<>
-unsigned short vite::VariantDefault()
+vLIB_EXPORT unsigned short vite::VariantDefault()
 {
     return 0;
 }
 
 template<>
-int vite::VariantDefault()
+vLIB_EXPORT int vite::VariantDefault()
 {
     return 0;
 }
 
 template<>
-unsigned int vite::VariantDefault()
+vLIB_EXPORT unsigned int vite::VariantDefault()
 {
     return 0;
 }
 
 template<>
-long vite::VariantDefault()
+vLIB_EXPORT long vite::VariantDefault()
 {
     return 0L;
 }
 
 template<>
-unsigned long vite::VariantDefault()
+vLIB_EXPORT unsigned long vite::VariantDefault()
 {
     return 0L;
 }
 
 template<>
-long long vite::VariantDefault()
+vLIB_EXPORT long long vite::VariantDefault()
 {
     return 0L;
 }
 
 template<>
-unsigned long long vite::VariantDefault()
+vLIB_EXPORT unsigned long long vite::VariantDefault()
 {
     return 0L;
 }
 
 template<>
-float vite::VariantDefault()
+vLIB_EXPORT float vite::VariantDefault()
 {
     return 0.0f;
 }
 
 template<>
-double vite::VariantDefault()
+vLIB_EXPORT double vite::VariantDefault()
 {
     return 0.0;
 }
 
 template<>
-long double vite::VariantDefault()
+vLIB_EXPORT long double vite::VariantDefault()
 {
     return 0.0;
 }
 
 template<>
-std::string vite::VariantDefault()
+vLIB_EXPORT std::string vite::VariantDefault()
 {
     return std::string();
 }

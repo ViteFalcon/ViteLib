@@ -26,6 +26,7 @@
 #include "../string.hpp"
 #include <cinttypes>
 #include <cstdlib>
+#include <iostream>
 #include "case_insenstive_string.h"
 
 #if defined(_MSC_VER)

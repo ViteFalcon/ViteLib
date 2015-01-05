@@ -28,7 +28,7 @@ namespace vite
     const std::type_info& Variant::VOID_TYPE = typeid(void);
 
     template<>
-    vEXPORT Optional<const char*> Variant::maybeAs<const char*>() const
+    Optional<const char*> Variant::maybeAs<const char*>() const
     {
         const Optional<String> result = maybeAs<String>();
         if (result.isAbsent())
@@ -39,7 +39,7 @@ namespace vite
     }
 
     template<>
-    vEXPORT Optional<const wchar_t*> Variant::maybeAs<const wchar_t*>() const
+    Optional<const wchar_t*> Variant::maybeAs<const wchar_t*>() const
     {
         const Optional<String> result = maybeAs<String>();
         if (result.isAbsent())
@@ -50,7 +50,7 @@ namespace vite
     }
 
     template <>
-    vEXPORT Optional<std::string> Variant::maybeAs<std::string>() const
+    Optional<std::string> Variant::maybeAs<std::string>() const
     {
         const Optional<String> result = maybeAs<String>();
         if (result.isAbsent())
@@ -61,7 +61,7 @@ namespace vite
     }
 
     template<>
-    vEXPORT Optional<std::wstring> Variant::maybeAs<std::wstring>() const
+    Optional<std::wstring> Variant::maybeAs<std::wstring>() const
     {
         const Optional<String> result = maybeAs<String>();
         if (result.isAbsent())

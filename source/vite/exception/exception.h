@@ -26,9 +26,16 @@
 #include <boost/exception/all.hpp>
 #include <exception>
 
+#include "../defines.hpp"
+
+#if vCOMPILER_IS_MSVC
+#   pragma warning(push)
+#   pragma warning(disable: 4275)
+#endif
+
 namespace vite
 {
-    struct Exception : virtual std::exception, virtual boost::exception
+    struct vLIB_EXPORT Exception : virtual std::exception, virtual boost::exception
     {
     public:
         Exception() = default;
@@ -42,3 +49,7 @@ namespace vite
         virtual const char* what() const override;
     };
 }
+
+#if vCOMPILER_IS_MSVC
+#   pragma warning(pop)
+#endif

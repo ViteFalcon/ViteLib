@@ -24,30 +24,70 @@
 #include "variant_converter.h"
 #include "../exception.hpp"
 
-vite::VariantConverter::Converters vite::VariantConverter::sConverters;
+#include <unordered_map>
+#include <cinttypes>
+
+class vLIB_EXPORT vite::VariantConverter::Converters
+{
+public:
+    Converters() = default;
+    ~Converters() = default;
+
+    void add(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo, const Converter& converter);
+
+    bool canConvert(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo) const;
+    void* convert(const std::type_info& fromTypeInfo, const void* fromValue, const std::type_info& toTypeInfo) const;
+private:
+    typedef std::unordered_map<std::string, vite::VariantConverter::Converter> ToConverter;
+    typedef std::unordered_map<std::string, ToConverter> Container;
+
+    Container mContainer;
+};
+
+vite::VariantConverter::ConvertersPtr vite::VariantConverter::sConverters(new vite::VariantConverter::Converters());
 vite::StdConverters vite::VariantConverter::sStdConverters;
+
+void vite::VariantConverter::add(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo, const Converter& converter)
+{
+    sConverters->add(fromTypeInfo, toTypeInfo, converter);
+}
 
 bool vite::VariantConverter::canConvert(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo)
 {
-    const Converters::const_iterator fromConverterItr = sConverters.find(&fromTypeInfo);
-    if (fromConverterItr == sConverters.cend())
-    {
-        return false;
-    }
-    const ToConverter::const_iterator toConverterItr = fromConverterItr->second.find(&toTypeInfo);
-    return toConverterItr != fromConverterItr->second.cend();
+    return sConverters->canConvert(fromTypeInfo, toTypeInfo);
 }
 
 void* vite::VariantConverter::convert(const std::type_info& fromTypeInfo, const void* fromValue, const std::type_info& toTypeInfo)
 {
-    auto fromConverterItr = sConverters.find(&fromTypeInfo);
-    if (fromConverterItr == sConverters.cend())
+    return sConverters->convert(fromTypeInfo, fromValue, toTypeInfo);
+}
+
+void vite::VariantConverter::Converters::add(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo, const Converter& converter)
+{
+    mContainer[fromTypeInfo.name()][toTypeInfo.name()] = converter;
+}
+
+bool vite::VariantConverter::Converters::canConvert(const std::type_info& fromTypeInfo, const std::type_info& toTypeInfo) const
+{
+    auto fromConverterItr = mContainer.find(fromTypeInfo.name());
+    if (fromConverterItr == mContainer.end())
+    {
+        return false;
+    }
+    auto toConverterItr = fromConverterItr->second.find(toTypeInfo.name());
+    return toConverterItr != fromConverterItr->second.cend();
+}
+
+void* vite::VariantConverter::Converters::convert(const std::type_info& fromTypeInfo, const void* fromValue, const std::type_info& toTypeInfo) const
+{
+    auto fromConverterItr = mContainer.find(fromTypeInfo.name());
+    if (fromConverterItr == mContainer.cend())
     {
         std::stringstream errorMessage;
         errorMessage << "Variant conversions doesn't have any conversion methods for types from " << fromTypeInfo.name();
         vTHROW(InvalidOperationException() << ErrorInfoDetail(errorMessage.str()));
     }
-    auto toConverterItr = fromConverterItr->second.find(&toTypeInfo);
+    auto toConverterItr = fromConverterItr->second.find(toTypeInfo.name());
     if (toConverterItr == fromConverterItr->second.cend())
     {
         std::stringstream errorMessage;
