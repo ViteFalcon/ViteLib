@@ -33,12 +33,12 @@ namespace vite
     class Optional
     {
     public:
-        static Optional of(const T& value)
+        static Optional Of(const T& value)
         {
             return Optional(value);
         }
 
-        static Optional absent()
+        static Optional Absent()
         {
             return Optional();
         }

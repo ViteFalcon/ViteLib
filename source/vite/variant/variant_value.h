@@ -76,4 +76,43 @@ namespace vite
     private:
         T mValue;
     };
+
+    template <typename T>
+    class VariantValueImpl<T*> : public VariantValue
+    {
+    public:
+        VariantValueImpl(T* value)
+            : mValue(value) {}
+        ~VariantValueImpl()
+        {
+            delete mValue;
+        }
+
+        virtual const std::type_info& getType() const override
+        {
+            return typeid(T*);
+        }
+
+        virtual VariantValue* clone() const override
+        {
+            return new VariantValueImpl(mValue);
+        }
+
+        virtual const void* data() const override
+        {
+            return mValue;
+        }
+
+        virtual bool equals(const VariantValue& rhs) const override
+        {
+            if (getType() != rhs.getType())
+            {
+                return false;
+            }
+            const VariantValueImpl& other = static_cast<const VariantValueImpl&>(rhs);
+            return mValue == other.mValue;
+        }
+
+        T* mValue;
+    };
 }

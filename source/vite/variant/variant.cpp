@@ -33,9 +33,9 @@ namespace vite
         const Optional<String> result = maybeAs<String>();
         if (result.isAbsent())
         {
-            Optional<const char*>::absent();
+            Optional<const char*>::Absent();
         }
-        return Optional<const char*>::of(result.getValue().asUTF8_c_str());
+        return Optional<const char*>::Of(result.getValue().asUTF8_c_str());
     }
 
     template<>
@@ -44,9 +44,9 @@ namespace vite
         const Optional<String> result = maybeAs<String>();
         if (result.isAbsent())
         {
-            Optional<const wchar_t*>::absent();
+            Optional<const wchar_t*>::Absent();
         }
-        return Optional<const wchar_t*>::of(result.getValue().asWStr_c_str());
+        return Optional<const wchar_t*>::Of(result.getValue().asWStr_c_str());
     }
 
     template <>
@@ -55,9 +55,9 @@ namespace vite
         const Optional<String> result = maybeAs<String>();
         if (result.isAbsent())
         {
-            Optional<std::string>::absent();
+            Optional<std::string>::Absent();
         }
-        return Optional<std::string>::of(result.getValue().asUTF8());
+        return Optional<std::string>::Of(result.getValue().asUTF8());
     }
 
     template<>
@@ -66,8 +66,8 @@ namespace vite
         const Optional<String> result = maybeAs<String>();
         if (result.isAbsent())
         {
-            Optional<std::wstring>::absent();
+            Optional<std::wstring>::Absent();
         }
-        return Optional<std::wstring>::of(result.getValue().asWStr());
+        return Optional<std::wstring>::Of(result.getValue().asWStr());
     }
 }

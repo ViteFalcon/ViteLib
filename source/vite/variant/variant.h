@@ -163,17 +163,17 @@ namespace vite
         {
             if (mValueHeld == nullptr)
             {
-                return Optional<ToType>::absent();
+                return Optional<ToType>::Absent();
             }
             if (typeid(ToType) == mValueHeld->getType())
             {
-                return Optional<ToType>::of(getData<ToType>());
+                return Optional<ToType>::Of(getData<ToType>());
             }
             if (VariantConverter::canConvert<ToType>(mValueHeld->getType()))
             {
-                return Optional<ToType>::of(*VariantConverter::convert<ToType>(mValueHeld->getType(), mValueHeld->data()));
+                return Optional<ToType>::Of(*VariantConverter::convert<ToType>(mValueHeld->getType(), mValueHeld->data()));
             }
-            return Optional<ToType>::absent();
+            return Optional<ToType>::Absent();
         }
 
         template<>
